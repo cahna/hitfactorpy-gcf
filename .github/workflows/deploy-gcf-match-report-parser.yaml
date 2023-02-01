@@ -1,0 +1,27 @@
+name: Deploy GCF
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Deploy Cloud Function
+      uses: google-github-actions/deploy-cloud-functions@v0.1.2
+      with:
+        credentials: ${{ secrets.GCP_SA_KEY }}
+        name: hitfactorpy-match-report-parser
+        description: Match Report parser as a Google Cloud Function. POST a match report and receive JSON.
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        region: us-west2
+        source_dir: hitfactorpy_gcf
+        entry_point: http_main
+        runtime: python310
+        timeout: 20
+        max_instances: 1
+        # optional configs, see google-cloud-actions/deploy-cloud-functions for full reference
+        # list of key-value pairs to set as environment variables in the form KEY1=VALUE1,KEY2=VALUE2.
+        # env_vars:
